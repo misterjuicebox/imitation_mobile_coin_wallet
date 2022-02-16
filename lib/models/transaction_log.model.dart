@@ -49,6 +49,8 @@ class Transaction with ChangeNotifier {
         confirm = json['confirm'];
 
   static verify(TransactionLogMap transactionLog) {
+    // this is to filter out received transactions that are actually part of sent transactions
+    // likely not best way to do this, but best I could figure out via full sevice api
     if (transactionLog.direction == "tx_direction_received" &&
         transactionLog.assignedAddressId != Constants.PrimaryAccount.mainAddress) {
       return false;

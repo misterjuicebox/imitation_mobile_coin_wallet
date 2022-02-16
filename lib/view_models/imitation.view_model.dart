@@ -18,8 +18,13 @@ import '../services/price.service.dart';
 import '../services/transaction.service.dart';
 import '../utils/currency.util.dart' as CurrencyUtil;
 
-// would be better to have different view models for the different relevant models:
-// imitation app-wide, transaction, balance, currency, contacts
+class LoadData {
+  BalanceStatus? balanceStatus;
+  List<Transaction>? transactionLogs;
+
+  LoadData(this.balanceStatus, this.transactionLogs);
+}
+
 class Imitation with ChangeNotifier {
   // transaction logs used to show list of transactions
   List<Transaction> _transactionLogs = [];
@@ -29,6 +34,7 @@ class Imitation with ChangeNotifier {
   }
 
   setTransactionLogs(List<Transaction> transactionLogs) {
+    notifyListeners();
     _transactionLogs = transactionLogs;
   }
 
@@ -58,6 +64,7 @@ class Imitation with ChangeNotifier {
 
   setBalanceStatus(BalanceStatus balanceStatus) {
     _balanceStatus = balanceStatus;
+    notifyListeners();
   }
 
   // determines which price to show on primary and secondary totals via toggle button
@@ -81,31 +88,12 @@ class Imitation with ChangeNotifier {
 
   setContacts(List<Contact> contacts) {
     _contacts = contacts;
-  }
-
-  GetBalanceForAccountResponse? _getBalanceForAccountResponse;
-
-  GetBalanceForAccountResponse? get getBalanceForAccountResponse {
-    return _getBalanceForAccountResponse;
-  }
-
-  setBalanceForAccountResponse(GetBalanceForAccountResponse response) {
-    _getBalanceForAccountResponse = response;
-  }
-
-  // contains mobPrice via coinmarketcap api
-  MobPriceResponse? _mobPrice;
-
-  MobPriceResponse? get mobPrice {
-    return _mobPrice;
-  }
-
-  setMobPrice(MobPriceResponse mobPrice) {
-    _mobPrice = mobPrice;
+    notifyListeners();
   }
 
   // used to show error if data didn't load
-  bool _dataLoaded = false;
+  // set to true here so it doesn't show each time app boots
+  bool _dataLoaded = true;
 
   bool get dataLoaded {
     return _dataLoaded;
@@ -113,77 +101,81 @@ class Imitation with ChangeNotifier {
 
   setDataLoaded(bool dataLoaded) {
     _dataLoaded = dataLoaded;
+    notifyListeners();
   }
 
   Future<void> initImitation() async {
-    await getMobPrice();
-    await getBalance();
-    List<Transaction> transactionLogs = await getTransactionLogs();
-    setTransactionLogs(transactionLogs);
-    setContacts(Constants.ogContacts);
-    setDataLoaded(true);
-    notifyListeners();
+    LoadData? loadData = await getData();
+
+    if (loadData != null) {
+      setBalanceStatus(loadData.balanceStatus!);
+      setTransactionLogs(loadData.transactionLogs!);
+      setContacts(Constants.ogContacts);
+      setDataLoaded(true);
+    }
     setPoll();
   }
 
   void setPoll() {
     Timer.periodic(Duration(seconds: 5), (timer) async {
-      // await getMobPrice(); ideally would run this but my api usage will get capped
-      await getBalance(); // consider using same pattern on getBalance as getTransaction log, return balance and set outside of getBalance
-      List<Transaction> transactionLogs = [];
-      transactionLogs = await getTransactionLogs();
+      LoadData? loadData = await getData();
 
-      if (_transactionLogs.length > 0 && _verifyingTransactions.length > 0) {
-        clearVerified(transactionLogs);
+      if (loadData != null) {
+        // check for new transactions, only notify if new exist to prevent unnecessary rebuilds of ui
+        int newLength = loadData.transactionLogs?.length ?? 0;
+        if (newLength > transactionLogs.length) {
+          setBalanceStatus(loadData.balanceStatus!);
+          setConfirm(loadData.transactionLogs!);
+          setTransactionLogs(loadData.transactionLogs!);
+          if (_verifyingTransactions.length > 0) clearVerified(transactionLogs);
+        }
       }
-
-      // only set transactions if new ones exist so as not to rebuild unnecessarily
-      if (transactionLogs.length > _transactionLogs.length) {
-        setConfirm(transactionLogs);
-        setTransactionLogs(transactionLogs);
-      }
-      // notify in case data failed to load in some dataPolls and then succeeds with no new transactions
-      setDataLoaded(true);
-      notifyListeners();
     });
   }
 
-  Future<void> getMobPrice() async {
+  Future<LoadData?> getData() async {
+    MobPriceResponse? mobPrice;
     final ApiService mobPriceResponse = await PriceService().getMobPrice();
     if (mobPriceResponse.response != null) {
-      setMobPrice(mobPriceResponse.response as MobPriceResponse);
+      mobPrice = mobPriceResponse.response as MobPriceResponse;
     } else {
       setDataLoaded(false);
+      return null;
     }
-  }
 
-  Future<void> getBalance() async {
-    final ApiService balanceResponse = await TransactionService().getBalanceForAccount();
-    if (balanceResponse.response != null) {
-      setBalanceForAccountResponse(balanceResponse.response as GetBalanceForAccountResponse);
-      setBalanceStatus(BalanceStatus(
-          unspentPmob: CurrencyUtil.setMob(getBalanceForAccountResponse?.result.balance.unspentPmob),
-          displayMob: getBalanceForAccountResponse?.result.balance.unspentPmob,
+    GetBalanceForAccountResponse? balanceResponse;
+    final ApiService getBalanceResponse = await TransactionService().getBalanceForAccount();
+    BalanceStatus balance;
+    if (getBalanceResponse.response != null) {
+      balanceResponse = getBalanceResponse.response as GetBalanceForAccountResponse;
+      balance = BalanceStatus(
+          unspentPmob: CurrencyUtil.setMob(balanceResponse.result.balance.unspentPmob),
+          displayMob: balanceResponse.result.balance.unspentPmob,
           dollars: CurrencyUtil.setDollars(
-              getBalanceForAccountResponse?.result.balance.unspentPmob, mobPrice?.data.the7878.quote.usd.price)));
+              balanceResponse.result.balance.unspentPmob, mobPrice.data.the7878.quote.usd.price));
     } else {
       setDataLoaded(false);
+      return null;
     }
-  }
 
-  Future<List<Transaction>> getTransactionLogs() async {
     final ApiService txsResponse = await TransactionService().getAllTransactionLogs();
-
+    List<Transaction>? transactionLogs;
     if (txsResponse.response != null) {
-      return await handleTransactionLogResponse(txsResponse.response as GetAllTransactionLogsForAccountResponse);
+      transactionLogs = handleTransactionLogResponse(txsResponse.response as GetAllTransactionLogsForAccountResponse);
     } else {
       setDataLoaded(false);
-      return [];
+      return null;
     }
+
+    return LoadData(balance, transactionLogs);
   }
 
-  Future<List<Transaction>> handleTransactionLogResponse(GetAllTransactionLogsForAccountResponse response) async {
+  List<Transaction>? handleTransactionLogResponse(GetAllTransactionLogsForAccountResponse response) {
     List<Transaction> transactionLogs = [];
+    if (response.result.transactionLogMap.length < 1) {
+      setDataLoaded(false);
+      return null;
+    }
     response.result.transactionLogMap.forEach((transactionLogId, transactionLog) {
       if (Transaction.verify(transactionLog)) {
         transactionLogs.insert(
@@ -212,7 +204,7 @@ class Imitation with ChangeNotifier {
   }
 
   void clearVerified(List<Transaction> transactionLogs) {
-    // not confident this is the right way to clear/confirm a verifying transaction
+    // what is the right way to clear/confirm a transaction that's been sent
     // after studying full service docs for sometime, this is the best i got
     if (transactionLogs[0].finalizedBlockIndex == _verifyingTransactions[0].submittedBlockIndex) {
       setVerifyingTransactions([]);
