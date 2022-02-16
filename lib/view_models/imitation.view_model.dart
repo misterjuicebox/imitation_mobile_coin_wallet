@@ -18,13 +18,6 @@ import '../services/price.service.dart';
 import '../services/transaction.service.dart';
 import '../utils/currency.util.dart' as CurrencyUtil;
 
-class LoadData {
-  BalanceStatus? balanceStatus;
-  List<Transaction>? transactionLogs;
-
-  LoadData(this.balanceStatus, this.transactionLogs);
-}
-
 class Imitation with ChangeNotifier {
   // transaction logs used to show list of transactions
   List<Transaction> _transactionLogs = [];
@@ -228,4 +221,11 @@ class Imitation with ChangeNotifier {
         submittedBlockIndex: response.result.transactionLog.submittedBlockIndex);
     addVerifyingTransaction(verifyingTransaction);
   }
+}
+
+class LoadData {
+  BalanceStatus? balanceStatus;
+  List<Transaction>? transactionLogs;
+
+  LoadData(this.balanceStatus, this.transactionLogs);
 }
