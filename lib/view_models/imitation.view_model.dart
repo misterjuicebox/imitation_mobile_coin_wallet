@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:imitation_mob_wallet/models/currency_display.model.dart';
 
 import '../constants.dart' as Constants;
 import '../models/balance_status.model.dart';
 import '../models/build_and_submit_transaction_response.dart';
 import '../models/contact.model.dart';
+import '../models/currency_display.model.dart';
 import '../models/get_all_transaction_logs_for_account_response.dart';
 import '../models/get_balance_for_account_response.dart';
 import '../models/mob_price_response.model.dart';
