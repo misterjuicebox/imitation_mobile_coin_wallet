@@ -11,25 +11,27 @@ class PrimaryTotal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final balance = Provider.of<Imitation>(context).balanceStatus;
-    final currency = Provider.of<CurrencyDisplay>(context);
-    return Row(children: [
-      Padding(
-        padding: EdgeInsets.only(right: 5),
-        child: currency.currency == Constants.mob
-            ? SvgPicture.asset(
-                'assets/mob_icon.svg',
-                color: Colors.white,
-                height: 28,
-                width: 28,
-                semanticsLabel: "Mobile Coin Icon",
-              )
-            : Text('\$', style: TextStyle(color: Colors.white, fontSize: 30)),
-      ),
-      Text(
-        currency.currency == Constants.usd ? balance.dollars : balance.unspentPmob,
-        style: TextStyle(color: Colors.white, fontSize: 30),
-      )
-    ]);
+    return Consumer<CurrencyDisplay>(builder: (context, currency, child) {
+      return Row(children: [
+        Padding(
+          padding: EdgeInsets.only(right: 5),
+          child: currency.currency == Constants.mob
+              ? SvgPicture.asset(
+                  'assets/mob_icon.svg',
+                  color: Colors.white,
+                  height: 28,
+                  width: 28,
+                  semanticsLabel: "Mobile Coin Icon",
+                )
+              : Text('\$', style: TextStyle(color: Colors.white, fontSize: 30)),
+        ),
+        Consumer<Imitation>(builder: (context, imitation, child) {
+          return Text(
+            currency.currency == Constants.usd ? imitation.balanceStatus.dollars : imitation.balanceStatus.unspentPmob,
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          );
+        })
+      ]);
+    });
   }
 }

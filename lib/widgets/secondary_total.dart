@@ -11,25 +11,29 @@ class SecondaryTotal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imitation = Provider.of<Imitation>(context);
-    final currency = Provider.of<CurrencyDisplay>(context);
-    return Row(children: [
-      currency.currency == Constants.usd
-          ? SvgPicture.asset(
-              'assets/mob_icon.svg',
-              color: Colors.white54,
-              height: 15,
-              width: 15,
-              semanticsLabel: 'Mobile Coin Icon',
-            )
-          : Text('\$', style: TextStyle(color: Colors.white54, fontSize: 14)),
-      Padding(
-        padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
-        child: Text(
-          currency.currency == Constants.mob ? imitation.balanceStatus.dollars : imitation.balanceStatus.unspentPmob,
-          style: TextStyle(color: Colors.white54, fontSize: 14),
+    return Consumer<CurrencyDisplay>(builder: (context, currency, child) {
+      return Row(children: [
+        currency.currency == Constants.usd
+            ? SvgPicture.asset(
+                'assets/mob_icon.svg',
+                color: Colors.white54,
+                height: 15,
+                width: 15,
+                semanticsLabel: 'Mobile Coin Icon',
+              )
+            : Text('\$', style: TextStyle(color: Colors.white54, fontSize: 14)),
+        Padding(
+          padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+          child: Consumer<Imitation>(builder: (context, imitation, child) {
+            return Text(
+              currency.currency == Constants.mob
+                  ? imitation.balanceStatus.dollars
+                  : imitation.balanceStatus.unspentPmob,
+              style: TextStyle(color: Colors.white54, fontSize: 14),
+            );
+          }),
         ),
-      ),
-    ]);
+      ]);
+    });
   }
 }
