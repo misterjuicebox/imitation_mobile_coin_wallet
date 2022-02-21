@@ -7,7 +7,6 @@ import '../constants.dart' as Constants;
 import '../models/balance_status.model.dart';
 import '../models/build_and_submit_transaction_response.dart';
 import '../models/contact.model.dart';
-import '../models/currency_display.model.dart';
 import '../models/get_all_transaction_logs_for_account_response.dart';
 import '../models/get_balance_for_account_response.dart';
 import '../models/mob_price_response.model.dart';
@@ -27,8 +26,8 @@ class Imitation with ChangeNotifier {
   }
 
   setTransactionLogs(List<Transaction> transactionLogs) {
-    notifyListeners();
     _transactionLogs = transactionLogs;
+    notifyListeners();
   }
 
   // list of transactions in verifying state after user sends
@@ -49,7 +48,7 @@ class Imitation with ChangeNotifier {
   }
 
   // displays balance for user in mob and usd
-  BalanceStatus _balanceStatus = BalanceStatus(unspentPmob: '', displayMob: '', accountBlockHeight: '', dollars: '');
+  BalanceStatus _balanceStatus = BalanceStatus.init();
 
   BalanceStatus get balanceStatus {
     return _balanceStatus;
@@ -57,18 +56,6 @@ class Imitation with ChangeNotifier {
 
   setBalanceStatus(BalanceStatus balanceStatus) {
     _balanceStatus = balanceStatus;
-    notifyListeners();
-  }
-
-  // determines which price to show on primary and secondary totals via toggle button
-  CurrencyDisplay _currencyDisplay = CurrencyDisplay(currency: Constants.usd);
-
-  CurrencyDisplay get currencyDisplay {
-    return _currencyDisplay;
-  }
-
-  setCurrencyDisplay(CurrencyDisplay currencyDisplay) {
-    _currencyDisplay = currencyDisplay;
     notifyListeners();
   }
 
@@ -114,6 +101,10 @@ class Imitation with ChangeNotifier {
       LoadData? loadData = await getData();
 
       if (loadData != null) {
+        // if data loaded and previous data loaded value was false set to true so that error no longer shows
+        // don't set to true everytime because setting to true rebuilds entire transaction list
+        // because dataLoaded is a conditional used to display list or not
+        if (!_dataLoaded) setDataLoaded(true);
         // check for new transactions, only notify if new exist to prevent unnecessary rebuilds of ui
         int newLength = loadData.transactionLogs?.length ?? 0;
         if (newLength > transactionLogs.length) {
@@ -142,10 +133,9 @@ class Imitation with ChangeNotifier {
     if (getBalanceResponse.response != null) {
       balanceResponse = getBalanceResponse.response as GetBalanceForAccountResponse;
       balance = BalanceStatus(
-          unspentPmob: CurrencyUtil.setMob(balanceResponse.result.balance.unspentPmob),
-          displayMob: balanceResponse.result.balance.unspentPmob,
-          dollars: CurrencyUtil.setDollars(
-              balanceResponse.result.balance.unspentPmob, mobPrice.data.the7878.quote.usd.price));
+          CurrencyUtil.setMob(balanceResponse.result.balance.unspentPmob),
+          balanceResponse.result.balance.unspentPmob,
+          CurrencyUtil.setDollars(balanceResponse.result.balance.unspentPmob, mobPrice.data.the7878.quote.usd.price));
     } else {
       setDataLoaded(false);
       return null;

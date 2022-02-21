@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
-
-class Contact with ChangeNotifier {
+class Contact {
   final String id;
   final String firstName;
   final String lastName;

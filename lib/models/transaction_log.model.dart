@@ -1,10 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:imitation_mob_wallet/models/get_all_transaction_logs_for_account_response.dart';
 
 import './contact.model.dart';
 import '../account_constants.dart' as Constants;
 
-class Transaction with ChangeNotifier {
+class Transaction {
   final String id;
   final String direction;
   final String sentTime;

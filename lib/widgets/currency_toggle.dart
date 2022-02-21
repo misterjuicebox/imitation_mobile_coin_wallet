@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart' as Constants;
-import '../models/currency_display.model.dart';
-import '../view_models/imitation.view_model.dart';
+import '../view_models/currency_display.model.dart';
 
-class CurrencyToggle extends StatefulWidget {
-  const CurrencyToggle();
+// class CurrencyToggle extends StatefulWidget {
+//   const CurrencyToggle();
+//
+//   @override
+//   _CurrencyToggleState createState() => _CurrencyToggleState();
+// }
 
-  @override
-  _CurrencyToggleState createState() => _CurrencyToggleState();
-}
-
-class _CurrencyToggleState extends State<CurrencyToggle> {
-  String selectedCurrency = Constants.usd;
+// class _CurrencyToggleState extends State<CurrencyToggle> {
+class CurrencyToggle extends StatelessWidget {
+  // String selectedCurrency = Constants.usd;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Imitation>(
+    return Consumer<CurrencyDisplay>(
       builder: (context, imitation, child) {
         return CustomDropdownButton2(
           dropdownWidth: 80.0,
@@ -32,13 +32,13 @@ class _CurrencyToggleState extends State<CurrencyToggle> {
               border: Border.all(color: Colors.white70, width: .6)),
           hint: 'Select Item',
           dropdownItems: Constants.currencyOptions,
-          value: selectedCurrency,
+          value: imitation.currency,
           icon: Icon(CupertinoIcons.chevron_down),
           onChanged: (value) {
-            imitation.setCurrencyDisplay(CurrencyDisplay(currency: value!));
-            setState(() {
-              selectedCurrency = value;
-            });
+            imitation.setCurrencyDisplay(value!);
+            // setState(() {
+            //   selectedCurrency = value;
+            // });
           },
         );
       },

@@ -11,8 +11,17 @@ class TransactionLogRowItem extends StatelessWidget {
   final Transaction transaction;
   TransactionLogRowItem({required this.transaction});
 
+  // This technique below could be used if TransactionLobRowItem needed to make a call to manipulate
+  // an field in Transaction, like if we wanted to mark transaction as a favorite, or no longer show it in the list
+
+  // TransactionLogRowItem();
+
   @override
   Widget build(BuildContext context) {
+    // This technique below could be used if TransactionLobRowItem needed to make a call to manipulate
+    // an field in Transaction, like if we wanted to mark transaction as a favorite, or no longer show it in the list
+
+    // final transaction = Provider.of<Transaction>(context);
     return AnimatedContainer(
         duration: transaction.confirm ? Duration(seconds: 0) : Duration(seconds: 2),
         height: 50,
