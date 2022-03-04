@@ -59,6 +59,15 @@ class Imitation with ChangeNotifier {
     notifyListeners();
   }
 
+  MobPriceResponse? _mobPrice;
+
+  MobPriceResponse? get mobPrice => _mobPrice;
+
+  setMobPrice(MobPriceResponse mobPrice) {
+    _mobPrice = mobPrice;
+    notifyListeners();
+  }
+
   // used to display list of contacts
   List<Contact> _contacts = [];
 
@@ -122,6 +131,7 @@ class Imitation with ChangeNotifier {
     final ApiService mobPriceResponse = await PriceService().getMobPrice();
     if (mobPriceResponse.response != null) {
       mobPrice = mobPriceResponse.response as MobPriceResponse;
+      setMobPrice(mobPrice);
     } else {
       setDataLoaded(false);
       return null;

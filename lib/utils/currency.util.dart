@@ -23,6 +23,16 @@ String setDollars(String? pmob, double? dollarValue) {
   return dollars.toStringAsFixed(2);
 }
 
+String convertDollarsToPmob(String dollars, double mobPrice) {
+  double pmob = double.parse(dollars) / mobPrice;
+  return pmob.toStringAsFixed(4);
+}
+
+String convertPmobToDollars(String pmob, double mobPrice) {
+  double dollars = double.parse(pmob) * mobPrice;
+  return dollars.toStringAsFixed(2);
+}
+
 double total(double value, double fee) {
   return value + fee;
 }

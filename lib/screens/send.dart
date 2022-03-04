@@ -4,6 +4,7 @@ import 'package:imitation_mob_wallet/models/build_and_submit_transaction_respons
 import 'package:imitation_mob_wallet/services/api.service.dart';
 import 'package:imitation_mob_wallet/utils/transaction.util.dart';
 import 'package:imitation_mob_wallet/view_models/imitation.view_model.dart';
+import 'package:imitation_mob_wallet/view_models/send_transaction.dart';
 import 'package:imitation_mob_wallet/widgets/qr_icon.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,10 @@ class Send extends StatelessWidget {
 
   void toSending(BuildContext context) {
     Navigator.pushNamed(context, '/sending');
+  }
+
+  void goToEnterAmount(BuildContext context) {
+    Navigator.pushNamed(context, '/enter_amount');
   }
 
   @override
@@ -94,7 +99,14 @@ class Send extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             child: Text('Your contacts', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500))),
                         ...contacts.map((contact) {
-                          return ContactRowItem(contact: contact);
+                          return Consumer<SendTransaction>(builder: (context, transaction, child) {
+                            return GestureDetector(
+                                child: ContactRowItem(contact: contact),
+                                onTap: () {
+                                  transaction.setContact(contact);
+                                  goToEnterAmount(context);
+                                });
+                          });
                         }),
                       ])))),
           Line(color: Colors.white70),
@@ -107,6 +119,7 @@ class Send extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.white, width: 1.5)),
                 child: SliderButton(
                   action: () async {
+                    // todo do i need this?
                     toSending(context);
                     String pmobToSend = TransactionUtil.getRandomPmob();
                     final ApiService submitTransactionResponse =

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:imitation_mob_wallet/widgets/secondary_amount.dart';
 import 'package:provider/provider.dart';
 
-import '../constants.dart' as Constants;
+import '../models/balance_status.model.dart';
 import '../view_models/currency_display.model.dart';
 import '../view_models/imitation.view_model.dart';
 
@@ -11,29 +11,9 @@ class SecondaryTotal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CurrencyDisplay>(builder: (context, currency, child) {
-      return Row(children: [
-        currency.currency == Constants.usd
-            ? SvgPicture.asset(
-                'assets/mob_icon.svg',
-                color: Colors.white54,
-                height: 15,
-                width: 15,
-                semanticsLabel: 'Mobile Coin Icon',
-              )
-            : Text('\$', style: TextStyle(color: Colors.white54, fontSize: 14)),
-        Padding(
-          padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
-          child: Consumer<Imitation>(builder: (context, imitation, child) {
-            return Text(
-              currency.currency == Constants.mob
-                  ? imitation.balanceStatus.dollars
-                  : imitation.balanceStatus.unspentPmob,
-              style: TextStyle(color: Colors.white54, fontSize: 14),
-            );
-          }),
-        ),
-      ]);
-    });
+    final CurrencyDisplay display = Provider.of<CurrencyDisplay>(context);
+    final BalanceStatus balanceStatus = Provider.of<Imitation>(context).balanceStatus;
+
+    return SecondaryAmount(display, balanceStatus);
   }
 }

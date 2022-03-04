@@ -18,7 +18,7 @@ class TransactionLogRowItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // This technique below could be used if TransactionLobRowItem needed to make a call to manipulate
+    // This technique below could be used if TransactionLogRowItem needed to make a call to manipulate
     // an field in Transaction, like if we wanted to mark transaction as a favorite, or no longer show it in the list
 
     // final transaction = Provider.of<Transaction>(context);
