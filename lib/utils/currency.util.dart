@@ -7,10 +7,19 @@ double convert(String mob) {
   return mobAmount;
 }
 
-// maybe rename this? i use it in balanceStatus set and in widget display
-String setMob(String? pmob) {
-  double mobAmount = double.parse(pmob!) / 1000000000000;
-  return mobAmount.toStringAsFixed(4);
+String convertToDisplayMob(String? pmob) {
+  double displayMob = double.parse(pmob!) / 1000000000000;
+  return displayMob.toStringAsFixed(4);
+}
+
+String convertToPmob(String? displayMob) {
+  String pmob = displayMob ?? '';
+  pmob = pmob.replaceFirst(RegExp(r'\.'), '');
+  int pico = 13 - pmob.length;
+  for (int i = 0; i < pico; i++) {
+    pmob += "0";
+  }
+  return pmob;
 }
 
 String addFee(String pmob) {
@@ -23,9 +32,14 @@ String setDollars(String? pmob, double? dollarValue) {
   return dollars.toStringAsFixed(2);
 }
 
-String convertDollarsToPmob(String dollars, double mobPrice) {
+String convertDollarsToDisplayMob(String dollars, double mobPrice) {
   double pmob = double.parse(dollars) / mobPrice;
   return pmob.toStringAsFixed(4);
+}
+
+String convertDisplayMobToDollars(String displayMob, double mobPrice) {
+  double dollars = double.parse(displayMob) * mobPrice;
+  return dollars.toStringAsFixed(2);
 }
 
 String convertPmobToDollars(String pmob, double mobPrice) {

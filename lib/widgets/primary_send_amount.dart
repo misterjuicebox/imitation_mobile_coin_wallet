@@ -31,7 +31,7 @@ class PrimarySendAmount extends StatelessWidget {
           Text(
             display.currency == Constants.usd
                 ? (balanceStatus.dollars == '0' ? "0" : balanceStatus.dollars)
-                : (balanceStatus.unspentPmob == '0.0000' ? "0" : balanceStatus.unspentPmob),
+                : (balanceStatus.displayMob == '0.0000' ? "0" : balanceStatus.displayMob),
             style: TextStyle(color: Colors.white, fontSize: 30),
           ),
           placeHolder(display.currency, balanceStatus)
@@ -50,17 +50,17 @@ class PrimarySendAmount extends StatelessWidget {
         return Text('0', style: TextStyle(fontSize: 30, color: Colors.white24));
       }
     } else if (display.currency == Constants.mob) {
-      if (balanceStatus.unspentPmob.contains('.') &&
-          balanceStatus.unspentPmob.length - balanceStatus.unspentPmob.indexOf('.') < 2) {
+      if (balanceStatus.displayMob.contains('.') &&
+          balanceStatus.displayMob.length - balanceStatus.displayMob.indexOf('.') < 2) {
         return Text('0000', style: TextStyle(fontSize: 30, color: Colors.white24));
-      } else if (balanceStatus.unspentPmob.contains('.') &&
-          balanceStatus.unspentPmob.length - balanceStatus.unspentPmob.indexOf('.') < 3) {
+      } else if (balanceStatus.displayMob.contains('.') &&
+          balanceStatus.displayMob.length - balanceStatus.displayMob.indexOf('.') < 3) {
         return Text('000', style: TextStyle(fontSize: 30, color: Colors.white24));
-      } else if (balanceStatus.unspentPmob.contains('.') &&
-          balanceStatus.unspentPmob.length - balanceStatus.unspentPmob.indexOf('.') < 4) {
+      } else if (balanceStatus.displayMob.contains('.') &&
+          balanceStatus.displayMob.length - balanceStatus.displayMob.indexOf('.') < 4) {
         return Text('00', style: TextStyle(fontSize: 30, color: Colors.white24));
-      } else if (balanceStatus.unspentPmob.contains('.') &&
-          balanceStatus.unspentPmob.length - balanceStatus.unspentPmob.indexOf('.') < 5) {
+      } else if (balanceStatus.displayMob.contains('.') &&
+          balanceStatus.displayMob.length - balanceStatus.displayMob.indexOf('.') < 5) {
         return Text('0', style: TextStyle(fontSize: 30, color: Colors.white24));
       }
     }

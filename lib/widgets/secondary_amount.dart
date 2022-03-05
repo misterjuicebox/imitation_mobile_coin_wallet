@@ -28,7 +28,7 @@ class SecondaryAmount extends StatelessWidget {
           child: Text(
             display.currency == Constants.mob
                 ? (balanceStatus.dollars == '0' ? "0.00" : balanceStatus.dollars)
-                : (balanceStatus.unspentPmob == '0.0000' ? "0.0000" : balanceStatus.unspentPmob),
+                : (balanceStatus.displayMob == '0.0000' ? "0.0000" : balanceStatus.displayMob),
             style: TextStyle(color: Colors.white54, fontSize: 14),
           )),
     ]);

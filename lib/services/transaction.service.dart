@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:imitation_mob_wallet/models/build_and_submit_transaction_response.dart';
 import 'package:imitation_mob_wallet/models/get_all_transaction_logs_for_account_response.dart';
+import 'package:imitation_mob_wallet/view_models/send_transaction.dart';
 
 import '../account_constants.dart' as AccountConstants;
 import '../models/get_balance_for_account_response.dart';
@@ -79,7 +80,7 @@ class TransactionService {
     }
   }
 
-  Future<ApiService> buildAndSubmitTransaction(String amount) async {
+  Future<ApiService> buildAndSubmitTransaction(SendTransaction transaction) async {
     try {
       final http.Response response = await http.post(Uri.parse(AccountConstants.PrimaryAccount.fullServiceUrl),
           headers: <String, String>{
@@ -89,8 +90,8 @@ class TransactionService {
             "method": "build_and_submit_transaction",
             "params": {
               "account_id": AccountConstants.PrimaryAccount.accountId,
-              "recipient_public_address": AccountConstants.SecondaryAccount.mainAddress,
-              "value_pmob": amount
+              "recipient_public_address": transaction.contact.mainAddress,
+              "value_pmob": transaction.balanceStatus.unspentPmob
             },
             "jsonrpc": "2.0",
             "id": 1

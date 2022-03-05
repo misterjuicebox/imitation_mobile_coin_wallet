@@ -143,8 +143,8 @@ class Imitation with ChangeNotifier {
     if (getBalanceResponse.response != null) {
       balanceResponse = getBalanceResponse.response as GetBalanceForAccountResponse;
       balance = BalanceStatus(
-          CurrencyUtil.setMob(balanceResponse.result.balance.unspentPmob),
           balanceResponse.result.balance.unspentPmob,
+          CurrencyUtil.convertToDisplayMob(balanceResponse.result.balance.unspentPmob),
           CurrencyUtil.setDollars(balanceResponse.result.balance.unspentPmob, mobPrice.data.the7878.quote.usd.price));
     } else {
       setDataLoaded(false);

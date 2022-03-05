@@ -29,7 +29,7 @@ class PrimaryAmount extends StatelessWidget {
       Text(
         display.currency == Constants.usd
             ? (balanceStatus.dollars == '0' ? "0" : balanceStatus.dollars)
-            : (balanceStatus.unspentPmob == '0.0000' ? "0" : balanceStatus.unspentPmob),
+            : (balanceStatus.displayMob == '0.0000' ? "0" : balanceStatus.displayMob),
         style: TextStyle(color: Colors.white, fontSize: 30),
       )
     ]);

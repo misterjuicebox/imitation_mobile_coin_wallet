@@ -37,7 +37,7 @@ class TransactionVerifyingRowItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "- " + CurrencyUtil.setMob(verifyingTransaction.pmob) + ' MOB',
+                "- " + CurrencyUtil.convertToDisplayMob(verifyingTransaction.pmob) + ' MOB',
                 style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: .1),
               ),
               Container(

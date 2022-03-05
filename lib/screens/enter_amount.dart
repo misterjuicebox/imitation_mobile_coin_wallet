@@ -10,8 +10,10 @@ import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart' as Constants;
+import '../utils/currency.util.dart';
 import '../view_models/imitation.view_model.dart';
 import '../widgets/amount_button.dart';
+import '../widgets/error_dialog.dart';
 import '../widgets/primary_send_amount.dart';
 import '../widgets/secondary_amount.dart';
 
@@ -30,19 +32,6 @@ class _EnterAmountState extends State<EnterAmount> {
   void goToReview(BuildContext context) {
     Navigator.pushNamed(context, '/review_transaction');
   }
-
-  // void addAmount(String amount, CurrencyDisplay display) {
-  //   print(amount);
-  //   setState(() {
-  //     if (display.currency == Constants.usd) {
-  //       if (sendBalanceStatus.dollars == '0') {
-  //         sendBalanceStatus.dollars = amount;
-  //       } else if (sendBalanceStatus.dollars.length > 0) {
-  //         sendBalanceStatus.dollars += amount;
-  //       }
-  //     }
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +142,9 @@ class _EnterAmountState extends State<EnterAmount> {
                     AmountButton('0'),
                     GestureDetector(
                       child: Text('x', style: TextStyle(fontSize: 35)),
-                      onTap: () => sendBalanceStatus.remove(mobPrice!, currencyDisplay),
+                      onTap: () => currencyDisplay.currency == Constants.usd
+                          ? sendBalanceStatus.removeUsd(mobPrice!)
+                          : sendBalanceStatus.removeMob(mobPrice!),
                     ),
                   ],
                 )
@@ -176,12 +167,28 @@ class _EnterAmountState extends State<EnterAmount> {
             strokeWidth: 2,
             radius: Radius.circular(8),
             onTap: () {
-              sendTransaction.setBalanceStatus(sendBalanceStatus);
-              goToReview(context);
+              if (validateAmount(sendBalanceStatus, balanceStatus)) {
+                sendTransaction.setBalanceStatus(sendBalanceStatus);
+                goToReview(context);
+              } else {
+                showCupertinoModalPopup(
+                    context: context,
+                    builder: (BuildContext builder) {
+                      return ErrorDialog(errorMessage: 'Not enough funds in your wallet.');
+                    });
+              }
             },
           ),
         )
       ],
     ));
+  }
+
+  bool validateAmount(BalanceStatus sendBalanceStatus, BalanceStatus balanceStatus) {
+    if (double.parse(addFee(sendBalanceStatus.unspentPmob)) <= double.parse(balanceStatus.unspentPmob)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

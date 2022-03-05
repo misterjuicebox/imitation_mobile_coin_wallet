@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:imitation_mob_wallet/view_models/currency_display.model.dart';
 
-import '../constants.dart' as Constants;
 import '../utils/currency.util.dart';
 
 class BalanceStatus with ChangeNotifier {
@@ -11,7 +9,7 @@ class BalanceStatus with ChangeNotifier {
 
   BalanceStatus(this._unspentPmob, this._displayMob, this._dollars);
 
-  BalanceStatus.init() : this('0.0000', '0.0000', '0');
+  BalanceStatus.init() : this('0', '0.0000', '0');
 
   String get dollars => _dollars;
 
@@ -34,61 +32,81 @@ class BalanceStatus with ChangeNotifier {
     notifyListeners();
   }
 
-  add(String amount, CurrencyDisplay display, double mobPrice) {
-    if (display.currency == Constants.usd) {
-      if (dollars.contains('.')) {
-        var index = dollars.indexOf('.');
-        if (dollars.length - index < 3) {
-          String newAmount = dollars + amount;
-          setDollarAmount(newAmount);
-          setUnspentMob(convertDollarsToPmob(newAmount, mobPrice));
-        }
-      } else if (dollars == '0') {
-        setDollarAmount(amount);
-        setUnspentMob(convertDollarsToPmob(amount, mobPrice));
-      } else if (dollars.length > 0) {
-        String newAmount = dollars + amount;
-        setDollarAmount(newAmount);
-        setUnspentMob(convertDollarsToPmob(newAmount, mobPrice));
+  // todo clean up and optimize
+  void addMob(String entry, double mobPrice) {
+    if (displayMob == '0.0000' || displayMob == '0') {
+      if (!entry.contains('.')) {
+        String newDisplayMob = double.parse(entry).toStringAsFixed(4);
+        setBalanceToSend(convertDisplayMobToDollars(newDisplayMob, mobPrice), entry);
+      } else {
+        setBalanceToSend('0', '0.');
       }
-    } else if (display.currency == Constants.mob) {
-      if (unspentPmob == '0.0000') {
-        setDollarAmount(convertPmobToDollars(amount, mobPrice));
-        setUnspentMob(amount);
-      } else if (unspentPmob.contains('.')) {
-        var index = unspentPmob.indexOf('.');
-        if (unspentPmob.length - index < 5) {
-          String newAmount = unspentPmob + amount;
-          setDollarAmount(convertPmobToDollars(newAmount, mobPrice));
-          setUnspentMob(newAmount);
-        }
-      } else if (unspentPmob.length > 0) {
-        String newAmount = unspentPmob + amount;
-        setDollarAmount(convertPmobToDollars(newAmount, mobPrice));
-        setUnspentMob(newAmount);
+    } else if (displayMob.contains('.')) {
+      if (displayMob.length - displayMob.indexOf('.') < 5) {
+        String displayMobTotal = displayMob + entry;
+        String dollarSum = convertDisplayMobToDollars(displayMobTotal, mobPrice);
+        setBalanceToSend(dollarSum, displayMobTotal);
       }
+    } else {
+      String displayMobTotal = displayMob + entry;
+      String dollarSum = convertDisplayMobToDollars(displayMobTotal, mobPrice);
+      setBalanceToSend(dollarSum, displayMobTotal);
     }
   }
 
-  remove(double mobPrice, CurrencyDisplay display) {
-    if (display.currency == Constants.usd) {
-      if (dollars.length > 1) {
-        String newDollars = dollars.substring(0, dollars.length - 1);
-        setDollarAmount(newDollars);
-        setUnspentMob(convertDollarsToPmob(newDollars, mobPrice));
-      } else {
-        setDollarAmount('0');
-        setUnspentMob('0.0000');
+  void addUsd(String entry, double mobPrice) {
+    String currentDollars = dollars;
+    String dollarTotal = currentDollars + entry;
+    String displayMobEntrySum = convertDollarsToDisplayMob(dollarTotal, mobPrice);
+
+    if (currentDollars.contains('.')) {
+      if (currentDollars.length - dollars.indexOf('.') < 3) {
+        setBalanceToSend(dollarTotal, displayMobEntrySum);
       }
-    } else if (display.currency == Constants.mob) {
-      if (unspentPmob.length > 1) {
-        String newPmob = unspentPmob.substring(0, unspentPmob.length - 1);
-        setDollarAmount(convertPmobToDollars(newPmob, mobPrice));
-        setUnspentMob(newPmob);
+    } else if (currentDollars == '0') {
+      if (!entry.contains('.')) {
+        String displayMob = convertDollarsToDisplayMob(entry, mobPrice);
+        setBalanceToSend(entry, displayMob);
       } else {
-        setDollarAmount('0');
-        setUnspentMob('0.0000');
+        setBalanceToSend(entry, '0.0000');
       }
+    } else if (currentDollars.length > 0) {
+      setBalanceToSend(dollarTotal, displayMobEntrySum);
+    }
+  }
+
+  void setBalanceToSend(String dollars, String displayMob) {
+    setDollarAmount(dollars);
+    setDisplayMob(displayMob);
+    setUnspentMob(convertToPmob(displayMob));
+  }
+
+  void removeUsd(double mobPrice) {
+    if (dollars == '0') {
+      return;
+    }
+    if (dollars.length > 1) {
+      String newDollars = dollars.substring(0, dollars.length - 1);
+      if (newDollars == '.') {
+        setBalanceToSend('0', '0.0000');
+      } else {
+        setBalanceToSend(newDollars, convertDollarsToDisplayMob(newDollars, mobPrice));
+      }
+    } else {
+      setBalanceToSend('0', '0.0000');
+    }
+  }
+
+  void removeMob(double mobPrice) {
+    if (displayMob.length > 1) {
+      String newDisplayMob = displayMob.substring(0, displayMob.length - 1);
+      if (newDisplayMob == '0.') {
+        setBalanceToSend("0", '0.0000');
+      } else {
+        setBalanceToSend(convertDisplayMobToDollars(newDisplayMob, mobPrice), newDisplayMob);
+      }
+    } else {
+      setBalanceToSend('0', '0.0000');
     }
   }
 }
