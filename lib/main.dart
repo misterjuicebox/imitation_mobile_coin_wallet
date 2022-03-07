@@ -29,7 +29,7 @@ void main() => runApp(MultiProvider(
         ChangeNotifierProvider<BalanceStatus>(create: (_) => BalanceStatus.init()),
         ChangeNotifierProvider(create: (_) => SendTransaction()),
         ChangeNotifierProvider(create: (_) => PinDisplay()),
-        ChangeNotifierProvider(create: (_) => RateLimiter()..timer()),
+        ChangeNotifierProvider(create: (_) => RateLimiter()),
         ChangeNotifierProvider(create: (_) => AlbumsViewModel()..fetchAlbums())
       ],
       child: ImitationMobWallet(),

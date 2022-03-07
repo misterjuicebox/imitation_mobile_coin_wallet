@@ -9,6 +9,10 @@ class RateLimiter with ChangeNotifier {
 // n = 1
 // time = 10 seconds
 
+  RateLimiter() {
+    timer();
+  }
+
   List<String> _requests = [];
 
   List<String> get requests => _requests;
@@ -17,7 +21,7 @@ class RateLimiter with ChangeNotifier {
     _requests = requests;
   }
 
-  Future<void> timer() async {
+  timer() {
     Timer.periodic(const Duration(seconds: 3), (timer) {
       if (requests.length > 0) {
         print(requests[0]);
