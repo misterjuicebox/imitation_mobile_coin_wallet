@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart' as Constants;
-import '../view_models/currency_display.model.dart';
+import '../view_models/currency_display.view_model.dart';
 
 // class CurrencyToggle extends StatefulWidget {
 //   const CurrencyToggle();

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:imitation_mob_wallet/models/balance_status.model.dart';
+import 'package:imitation_mob_wallet/view_models/balance_status.view_model.dart';
 
 import '../models/contact.model.dart';
 

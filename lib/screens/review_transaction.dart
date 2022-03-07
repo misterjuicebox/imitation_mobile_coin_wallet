@@ -5,11 +5,11 @@ import 'package:imitation_mob_wallet/view_models/imitation.view_model.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../models/build_and_submit_transaction_response.dart';
+import '../models/responses/build_and_submit_transaction_response.dart';
 import '../services/api.service.dart';
 import '../services/transaction.service.dart';
 import '../utils/currency.util.dart';
-import '../view_models/send_transaction.dart';
+import '../view_models/send_transaction.view_model.dart';
 import '../widgets/contact_row_item.dart';
 import '../widgets/error_dialog.dart';
 import '../widgets/line.dart';

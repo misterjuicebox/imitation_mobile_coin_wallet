@@ -2,20 +2,21 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart' as Constants;
-import '../models/balance_status.model.dart';
-import '../models/build_and_submit_transaction_response.dart';
 import '../models/contact.model.dart';
-import '../models/get_all_transaction_logs_for_account_response.dart';
-import '../models/get_balance_for_account_response.dart';
-import '../models/mob_price_response.model.dart';
+import '../models/responses/build_and_submit_transaction_response.dart';
+import '../models/responses/get_all_transaction_logs_for_account_response.dart';
+import '../models/responses/get_balance_for_account_response.dart';
+import '../models/responses/mob_price_response.model.dart';
 import '../models/transaction_log.model.dart';
 import '../models/verifying_transaction.model.dart';
 import '../services/api.service.dart';
 import '../services/price.service.dart';
 import '../services/transaction.service.dart';
 import '../utils/currency.util.dart' as CurrencyUtil;
+import 'balance_status.view_model.dart';
 
 class Imitation with ChangeNotifier {
   // transaction logs used to show list of transactions
@@ -94,6 +95,9 @@ class Imitation with ChangeNotifier {
   }
 
   Future<void> initImitation() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('pin', '123456');
+
     LoadData? loadData = await getData();
 
     if (loadData != null) {
@@ -139,6 +143,7 @@ class Imitation with ChangeNotifier {
 
     GetBalanceForAccountResponse? balanceResponse;
     final ApiService getBalanceResponse = await TransactionService().getBalanceForAccount();
+
     BalanceStatus balance;
     if (getBalanceResponse.response != null) {
       balanceResponse = getBalanceResponse.response as GetBalanceForAccountResponse;

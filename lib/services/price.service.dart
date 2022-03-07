@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:imitation_mob_wallet/account_constants.dart' as Constants;
 
-import '../models/mob_price_response.model.dart';
+import '../models/responses/mob_price_response.model.dart';
 import 'api.service.dart';
 
 class PriceService {

@@ -1,4 +1,4 @@
-import 'package:imitation_mob_wallet/models/get_all_transaction_logs_for_account_response.dart';
+import 'package:imitation_mob_wallet/models/responses/get_all_transaction_logs_for_account_response.dart';
 
 import './contact.model.dart';
 import '../account_constants.dart' as Constants;

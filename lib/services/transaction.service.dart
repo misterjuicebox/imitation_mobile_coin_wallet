@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:imitation_mob_wallet/models/build_and_submit_transaction_response.dart';
-import 'package:imitation_mob_wallet/models/get_all_transaction_logs_for_account_response.dart';
-import 'package:imitation_mob_wallet/view_models/send_transaction.dart';
+import 'package:imitation_mob_wallet/models/responses/build_and_submit_transaction_response.dart';
+import 'package:imitation_mob_wallet/models/responses/get_all_transaction_logs_for_account_response.dart';
+import 'package:imitation_mob_wallet/view_models/send_transaction.view_model.dart';
 
 import '../account_constants.dart' as AccountConstants;
-import '../models/get_balance_for_account_response.dart';
+import '../models/responses/get_balance_for_account_response.dart';
 import 'api.service.dart';
 
 class TransactionService {
@@ -120,6 +120,10 @@ class TransactionService {
             "id": 1
           }));
       if (response.statusCode == 200) {
+        // experimenting with json_serialization, annotation and build runner
+        // GetBalanceForAccount getBalanceForAccount =
+        //     GetBalanceForAccount.fromJson(jsonDecode(response.body)['result']['balance']);
+
         return ApiService(response: getBalanceForAccountResponseFromJson(response.body));
       } else {
         return ApiService(errorResponse: "Failed to fetch balance for account.");

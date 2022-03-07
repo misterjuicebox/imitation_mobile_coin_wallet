@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:imitation_mob_wallet/view_models/imitation.view_model.dart';
-import 'package:imitation_mob_wallet/view_models/send_transaction.dart';
+import 'package:imitation_mob_wallet/view_models/send_transaction.view_model.dart';
 import 'package:imitation_mob_wallet/widgets/qr_icon.dart';
 import 'package:provider/provider.dart';
 
@@ -83,7 +83,7 @@ class Send extends StatelessWidget {
           Line(color: Colors.white70),
           Container(
               padding: EdgeInsets.only(left: 15),
-              height: MediaQuery.of(context).size.height * .72,
+              height: MediaQuery.of(context).size.height * .73,
               child: SingleChildScrollView(
                   child: Padding(
                       padding: const EdgeInsets.only(top: 20),

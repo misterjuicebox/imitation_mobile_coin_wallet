@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../constants.dart' as Constants;
-import '../models/balance_status.model.dart';
-import '../view_models/currency_display.model.dart';
+import '../view_models/balance_status.view_model.dart';
+import '../view_models/currency_display.view_model.dart';
 
 class SecondaryAmount extends StatelessWidget {
   final CurrencyDisplay display;

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:imitation_mob_wallet/models/balance_status.model.dart';
-import 'package:imitation_mob_wallet/view_models/currency_display.model.dart';
-import 'package:imitation_mob_wallet/view_models/send_transaction.dart';
+import 'package:imitation_mob_wallet/view_models/balance_status.view_model.dart';
+import 'package:imitation_mob_wallet/view_models/currency_display.view_model.dart';
+import 'package:imitation_mob_wallet/view_models/send_transaction.view_model.dart';
 import 'package:imitation_mob_wallet/widgets/contact_row_item.dart';
 import 'package:imitation_mob_wallet/widgets/currency_toggle.dart';
 import 'package:imitation_mob_wallet/widgets/line.dart';
@@ -12,19 +12,12 @@ import 'package:provider/provider.dart';
 import '../constants.dart' as Constants;
 import '../utils/currency.util.dart';
 import '../view_models/imitation.view_model.dart';
-import '../widgets/amount_button.dart';
 import '../widgets/error_dialog.dart';
+import '../widgets/key_pad.dart';
 import '../widgets/primary_send_amount.dart';
 import '../widgets/secondary_amount.dart';
 
-class EnterAmount extends StatefulWidget {
-  const EnterAmount({Key? key}) : super(key: key);
-
-  @override
-  _EnterAmountState createState() => _EnterAmountState();
-}
-
-class _EnterAmountState extends State<EnterAmount> {
+class EnterAmount extends StatelessWidget {
   void toSend(BuildContext context) {
     Navigator.pushNamed(context, '/send');
   }
@@ -54,6 +47,7 @@ class _EnterAmountState extends State<EnterAmount> {
               size: 23.0,
             ),
             onPressed: () {
+              sendBalanceStatus.setBalanceToSend('0', '0.0000');
               toSend(context);
             },
           ),
@@ -108,51 +102,15 @@ class _EnterAmountState extends State<EnterAmount> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(15),
-          child: Container(
-              child: Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    AmountButton('1'),
-                    AmountButton('2'),
-                    AmountButton('3'),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    AmountButton('4'),
-                    AmountButton('5'),
-                    AmountButton('6'),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    AmountButton('7'),
-                    AmountButton('8'),
-                    AmountButton('9'),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    AmountButton('.'),
-                    AmountButton('0'),
-                    GestureDetector(
-                      child: Text('x', style: TextStyle(fontSize: 35)),
-                      onTap: () => currencyDisplay.currency == Constants.usd
-                          ? sendBalanceStatus.removeUsd(mobPrice!)
-                          : sendBalanceStatus.removeMob(mobPrice!),
-                    ),
-                  ],
-                )
-              ]),
-              height: 350,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2.5), borderRadius: BorderRadius.circular(10))),
-        ),
+            padding: const EdgeInsets.all(15),
+            child: Container(
+                child: KeyPad(
+                    add:
+                        currencyDisplay.currency == Constants.usd ? sendBalanceStatus.addUsd : sendBalanceStatus.addMob,
+                    remove: currencyDisplay.currency == Constants.usd
+                        ? sendBalanceStatus.removeUsd
+                        : sendBalanceStatus.removeMob,
+                    mobPrice: mobPrice))),
         Container(
           padding: EdgeInsets.only(left: 15, right: 15),
           width: MediaQuery.of(context).size.width * 50,

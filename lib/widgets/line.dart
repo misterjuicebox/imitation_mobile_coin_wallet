@@ -8,8 +8,7 @@ class Line extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 1,
-      decoration:
-          BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white70, width: .2, style: BorderStyle.solid))),
+      decoration: BoxDecoration(border: Border(bottom: BorderSide(color: color, width: .2, style: BorderStyle.solid))),
     );
   }
 }

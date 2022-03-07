@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import '../account_constants.dart';
+import '../../account_constants.dart';
 
 GetAllTransactionLogsForAccountResponse getAllTransactionLogsForAccountResponseFromJson(String str) =>
     GetAllTransactionLogsForAccountResponse.fromJson(json.decode(str));

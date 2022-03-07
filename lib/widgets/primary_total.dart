@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:imitation_mob_wallet/models/balance_status.model.dart';
-import 'package:imitation_mob_wallet/view_models/currency_display.model.dart';
+import 'package:imitation_mob_wallet/view_models/balance_status.view_model.dart';
+import 'package:imitation_mob_wallet/view_models/currency_display.view_model.dart';
 import 'package:provider/provider.dart';
 
 import './primary_amount.dart';

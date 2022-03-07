@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:imitation_mob_wallet/view_models/pin_display.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/currency_toggle.dart';
 import '../widgets/line.dart';
@@ -12,6 +14,9 @@ class BalanceAndTransactions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final PinDisplay pinDisplay = Provider.of<PinDisplay>(context);
+    if (pinDisplay.navigate) pinDisplay.setNavigate(false);
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
