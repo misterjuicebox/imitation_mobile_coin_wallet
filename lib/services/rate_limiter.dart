@@ -19,7 +19,6 @@ class RateLimiter with ChangeNotifier {
 
   Future<void> timer() async {
     Timer.periodic(const Duration(seconds: 3), (timer) {
-      print('timer');
       if (requests.length > 0) {
         print(requests[0]);
         requests.removeAt(0);
