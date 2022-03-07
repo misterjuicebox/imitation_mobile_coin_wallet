@@ -30,7 +30,7 @@ void main() => runApp(MultiProvider(
         ChangeNotifierProvider(create: (_) => SendTransaction()),
         ChangeNotifierProvider(create: (_) => PinDisplay()),
         ChangeNotifierProvider(create: (_) => RateLimiter()..timer()),
-        ChangeNotifierProvider(create: (_) => AlbumsViewModel())
+        ChangeNotifierProvider(create: (_) => AlbumsViewModel()..fetchAlbums())
       ],
       child: ImitationMobWallet(),
     ));

@@ -4,10 +4,6 @@ import '../models/albums.model.dart';
 import '../services/albums.service.dart';
 
 class AlbumsViewModel with ChangeNotifier {
-  AlbumsViewModel() {
-    fetchAlbums();
-  }
-
   Future<void> fetchAlbums() async {
     List<AlbumsModel> albums = await Albums().getAlbums();
     setAlbums(albums);
